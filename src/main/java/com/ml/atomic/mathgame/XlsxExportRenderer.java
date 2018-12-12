@@ -27,6 +27,8 @@ public class XlsxExportRenderer implements IResultRenderer {
         var params = new TemplateExportParams("tpl_math_game.xlsx");
         Map<String, Object> content = Maps.newHashMapWithExpectedSize(items.size() / 2);
 
+        if (items.size() % 2 != 0 && !items.isEmpty()) items.remove(0); //保证一行两个
+
         List<ExcelItem> contentItem = Lists.partition(items, 2).stream()
                 .map(line -> new ExcelItem(line.get(0), line.get(1))).collect(toList()); //Excel模板一行两个
         content.put("content", contentItem);

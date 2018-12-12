@@ -5,6 +5,7 @@ import com.google.common.collect.Sets;
 import lombok.extern.java.Log;
 import org.apache.commons.lang3.time.StopWatch;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -43,7 +44,7 @@ class ArithmeticGenerator {
 
         sw.stop();
         log.info("生成[" + result.size() + "]条算术题完毕, 总耗时[ " + sw.getTime() + " ]ms");
-        return List.copyOf(result);
+        return new ArrayList<>(result);
     }
 
     private static String generateItem(Operator operator, Range<Integer> firstNum, Range<Integer> secondNum, Range<Integer> result) {

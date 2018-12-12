@@ -20,7 +20,12 @@ public class MathGameApplication {
         ArithmeticGenerator generator = new ArithmeticGenerator();
         List<String> item1 = generator.execute(confLsc);
         List<String> item2 = generator.execute(confLsc);
+        List<String> item3 = generator.execute(confLsc);
+        List<String> item4 = generator.execute(confLsc);
+
         item1.addAll(item2);
+        item1.addAll(item3);
+        item1.addAll(item4);
 
         IResultRenderer renderer = new XlsxExportRenderer();
         renderer.execute(item1);
