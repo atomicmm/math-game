@@ -2,11 +2,18 @@ package com.ml.atomic.mathgame;
 
 import com.google.common.collect.Range;
 import lombok.AllArgsConstructor;
+import lombok.ToString;
+import lombok.extern.slf4j.Slf4j;
+
+import java.util.Optional;
 
 import static org.apache.commons.lang3.RandomUtils.nextInt;
 
+@Slf4j
 @AllArgsConstructor
+@ToString
 public final class CalcStep {
+    public static final int MAX_ERRORS = 999;
 
     Operator operator;
 
@@ -23,7 +30,8 @@ public final class CalcStep {
     /**
      * 单步计算，计算到符合限制的数据为止
      */
-    public Result apply(int lastNumber) {
+    public Optional<Result> apply(int lastNumber) {
+        int errorCount = 0;
         do {
             int nextNumber = nextInt(numRange.lowerEndpoint(), numRange.upperEndpoint());
             int result;
@@ -40,7 +48,14 @@ public final class CalcStep {
                     throw new IllegalArgumentException("使用了暂未支持的操作符:" + this.operator.label);
             }
 
-            if (this.resultRange.contains(result)) return new Result(nextNumber, result, this.operator);
+            if (this.resultRange.contains(result)) return Optional.of(new Result(nextNumber, result, this.operator));
+            else errorCount++;
+
+            // 超过最大重试次数
+            if (errorCount >= MAX_ERRORS) {
+                System.out.println(String.format("calc false... %s %s ? in %s", lastNumber, this.operator.label, resultRange));
+                return Optional.empty();
+            }
 
         } while (true);
     }

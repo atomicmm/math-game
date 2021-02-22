@@ -5,10 +5,13 @@ import com.google.common.collect.Range;
 import com.google.common.collect.Sets;
 import lombok.extern.java.Log;
 import org.apache.commons.lang3.time.StopWatch;
+import org.apache.commons.math3.util.Pair;
 
 import java.util.List;
-import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Collectors;
 
 import static org.apache.commons.lang3.RandomUtils.nextInt;
 
@@ -18,9 +21,9 @@ import static org.apache.commons.lang3.RandomUtils.nextInt;
 @Log
 class ArithmeticGenerator {
 
-    List<String> execute(Configuration configuration) {
+    List<Pair<String, String>> execute(Configuration configuration) {
 
-        var sw = new StopWatch();
+        StopWatch sw = new StopWatch();
         sw.start();
         log.info("使用配置".concat(configuration.toString()).concat("开始生成算术题..."));
 
@@ -29,16 +32,17 @@ class ArithmeticGenerator {
 
         // 使用set避免重复
         int totalCount = configuration.getTotalCount();
-        Set<String> result = Sets.newHashSetWithExpectedSize(totalCount);
+        Set<Pair<String, String>> result = Sets.newHashSetWithExpectedSize(totalCount);
 
         // 每一条子配置生成count条
         configuration.subItems.forEach((config, count) -> {
-            int subSeqCount = 0;
+            AtomicInteger subSeqCount = new AtomicInteger();
             do {
-                String resultItem = doGenerateItem(configuration.getFirstNumRange(), configuration.getResultRange(), config);
-                result.add(resultItem);
-                subSeqCount++;
-            } while (subSeqCount < count);
+                doGenerateItem(configuration.getFirstNumRange(), configuration.getResultRange(), config).ifPresent(resultItem -> {
+                    result.add(resultItem);
+                    subSeqCount.getAndIncrement();
+                });
+            } while (subSeqCount.get() < count);
         });
 
         sw.stop();
@@ -46,16 +50,31 @@ class ArithmeticGenerator {
         return Lists.newArrayList(result);
     }
 
-    private static String doGenerateItem(Range<Integer> firstNum, Range<Integer> resultRange, ConfigurationPart subSeq) {
+    private static Optional<Pair<String, String>> doGenerateItem(Range<Integer> firstNum, Range<Integer> resultRange, ConfigurationPart subSeq) {
 
         List<CalcStep> steps = subSeq.steps;
         int first = nextInt(firstNum.lowerEndpoint(), firstNum.upperEndpoint());
         do {
-            CalcStep.Result result = steps.stream().reduce(null, (partialResult, step) -> (Objects.isNull(partialResult))
-                    ? step.apply(first)
-                    : step.apply(partialResult.result), (i, j) -> j);
-            if (resultRange.contains(result.result))
-                return "";
+            List<CalcStep.Result> resultHolder = Lists.newArrayListWithCapacity(steps.size());
+            for (int i = 0; i < steps.size(); i++) {
+                CalcStep step = steps.get(i);
+                int lastVal = i == 0 ? first : resultHolder.get(i - 1).result;
+                Optional<CalcStep.Result> stepResult = step.apply(lastVal);
+
+                if (stepResult.isPresent()) resultHolder.add(stepResult.get());
+                else return Optional.empty();
+            }
+            int finalResult = resultHolder.get(resultHolder.size() - 1).result;
+
+            if (resultRange.contains(finalResult)) { // 落到了合理的区间内
+                String other = resultHolder.stream().map(i -> String.format("%s %s", i.operator.label, i.val)).collect(Collectors.joining(" ", " ", " "));
+
+                String blank = String.format("%s%s=", first, other);
+                String withAnswer = String.format("%s%s= %s", first, other, finalResult);
+
+                return Optional.of(Pair.create(blank, withAnswer));
+
+            }
         } while (true);
 
     }
