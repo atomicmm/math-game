@@ -7,6 +7,7 @@ import lombok.extern.java.Log;
 import org.apache.commons.lang3.time.StopWatch;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 
 import static org.apache.commons.lang3.RandomUtils.nextInt;
@@ -50,7 +51,9 @@ class ArithmeticGenerator {
         List<CalcStep> steps = subSeq.steps;
         int first = nextInt(firstNum.lowerEndpoint(), firstNum.upperEndpoint());
         do {
-            CalcStep.Result result = steps.stream().reduce(null, (i, j) -> i.apply(first), (i, j) -> j);
+            CalcStep.Result result = steps.stream().reduce(null, (partialResult, step) -> (Objects.isNull(partialResult))
+                    ? step.apply(first)
+                    : step.apply(partialResult.result), (i, j) -> j);
             if (resultRange.contains(result.result))
                 return "";
         } while (true);
