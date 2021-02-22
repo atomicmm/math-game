@@ -2,7 +2,6 @@ package com.ml.atomic.mathgame;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Range;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.ToString;
 
@@ -11,7 +10,7 @@ import java.util.List;
 @Getter @ToString
 public class ConfigurationPart {
 
-    List<PartDetail> steps = Lists.newArrayList();
+    List<CalcStep> steps = Lists.newArrayList();
 
     /**
      * 生成多少题
@@ -24,26 +23,9 @@ public class ConfigurationPart {
     }
 
     public ConfigurationPart addStep(Operator operator, Range<Integer> numRange, Range<Integer> resultRange) {
-        PartDetail detail = new PartDetail(operator, numRange, resultRange);
+        CalcStep detail = new CalcStep(operator, numRange, resultRange);
         this.steps.add(detail);
 
         return this;
-    }
-
-    @AllArgsConstructor
-    static final class PartDetail {
-
-        Operator operator;
-
-        /**
-         * 被操作数的闭区间
-         */
-        Range<Integer> numRange;
-
-        /**
-         * 分步计算结果闭区间
-         */
-        Range<Integer> resultRange;
-
     }
 }

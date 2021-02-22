@@ -9,12 +9,13 @@ import org.apache.commons.lang3.time.StopWatch;
 import java.util.List;
 import java.util.Set;
 
+import static org.apache.commons.lang3.RandomUtils.nextInt;
+
 /**
  * 算术题生成器
  */
 @Log
 class ArithmeticGenerator {
-    private static final String TPL_ITEM = " %s %s %s =    ";
 
     List<String> execute(Configuration configuration) {
 
@@ -29,6 +30,7 @@ class ArithmeticGenerator {
         int totalCount = configuration.getTotalCount();
         Set<String> result = Sets.newHashSetWithExpectedSize(totalCount);
 
+        // 每一条子配置生成count条
         configuration.subItems.forEach((config, count) -> {
             int subSeqCount = 0;
             do {
@@ -43,11 +45,16 @@ class ArithmeticGenerator {
         return Lists.newArrayList(result);
     }
 
-    private static String doGenerateItem(Range<Integer> firstNum, Range<Integer> result, ConfigurationPart subSeq) {
+    private static String doGenerateItem(Range<Integer> firstNum, Range<Integer> resultRange, ConfigurationPart subSeq) {
 
-        List<ConfigurationPart.PartDetail> steps = subSeq.steps;
+        List<CalcStep> steps = subSeq.steps;
+        int first = nextInt(firstNum.lowerEndpoint(), firstNum.upperEndpoint());
+        do {
+            CalcStep.Result result = steps.stream().reduce(null, (i, j) -> i.apply(first), (i, j) -> j);
+            if (resultRange.contains(result.result))
+                return "";
+        } while (true);
 
-        return "";
     }
 
 }
