@@ -1,5 +1,6 @@
 package com.ml.atomic.mathgame;
 
+import com.google.common.collect.Maps;
 import com.google.common.collect.Range;
 import lombok.Builder;
 import lombok.Getter;
@@ -24,13 +25,19 @@ class Configuration {
     Range<Integer> firstNumRange;
 
     /**
-     * 第二个操作数的闭区间
+     * 是否将最后的计算结果打乱
      */
-    Range<Integer> secondNumRange;
+    @Builder.Default
+    boolean useRandomSeq = Boolean.TRUE;
 
     /**
-     * 每种算法各生成多少条题目
+     * 从第二个数开始后面的被计算数配置
      */
-    Map<Operator, Integer> operatorPercent;
+    @Builder.Default
+    Map<ConfigurationPart, Integer> subItems = Maps.newLinkedHashMap();
 
+    public int getTotalCount() {
+        return this.subItems.values().stream()
+                .mapToInt(i -> i).sum();
+    }
 }
