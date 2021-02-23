@@ -3,9 +3,10 @@ package com.ml.atomic.mathgame;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Range;
 import com.google.common.collect.Sets;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 import lombok.extern.java.Log;
 import org.apache.commons.lang3.time.StopWatch;
-import org.apache.commons.math3.util.Pair;
 
 import java.util.List;
 import java.util.Optional;
@@ -21,7 +22,7 @@ import static org.apache.commons.lang3.RandomUtils.nextInt;
 @Log
 class ArithmeticGenerator {
 
-    List<Pair<String, String>> execute(Configuration configuration) {
+    List<Result> execute(Configuration configuration) {
 
         StopWatch sw = new StopWatch();
         sw.start();
@@ -32,17 +33,17 @@ class ArithmeticGenerator {
 
         // 使用set避免重复
         int totalCount = configuration.getTotalCount();
-        Set<Pair<String, String>> result = Sets.newHashSetWithExpectedSize(totalCount);
+        Set<Result> result = Sets.newHashSetWithExpectedSize(totalCount);
 
         // 每一条子配置生成count条
-        configuration.subItems.forEach((config, count) -> {
+        configuration.subItems.forEach(config -> {
             AtomicInteger subSeqCount = new AtomicInteger();
             do {
                 doGenerateItem(configuration.getFirstNumRange(), configuration.getResultRange(), config).ifPresent(resultItem -> {
                     result.add(resultItem);
                     subSeqCount.getAndIncrement();
                 });
-            } while (subSeqCount.get() < count);
+            } while (subSeqCount.get() < config.getCount());
         });
 
         sw.stop();
@@ -50,7 +51,7 @@ class ArithmeticGenerator {
         return Lists.newArrayList(result);
     }
 
-    private static Optional<Pair<String, String>> doGenerateItem(Range<Integer> firstNum, Range<Integer> resultRange, ConfigurationPart subSeq) {
+    private static Optional<Result> doGenerateItem(Range<Integer> firstNum, Range<Integer> resultRange, ConfigurationPart subSeq) {
 
         List<CalcStep> steps = subSeq.steps;
         int first = nextInt(firstNum.lowerEndpoint(), firstNum.upperEndpoint());
@@ -72,11 +73,18 @@ class ArithmeticGenerator {
                 String blank = String.format("%s%s=", first, other);
                 String withAnswer = String.format("%s%s= %s", first, other, finalResult);
 
-                return Optional.of(Pair.create(blank, withAnswer));
+                return Optional.of(new Result(blank, withAnswer));
 
             }
         } while (true);
 
+    }
+
+    @AllArgsConstructor
+    @Getter
+    static class Result {
+        String blank;
+        String withAnswer;
     }
 
 }

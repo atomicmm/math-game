@@ -10,8 +10,7 @@ import java.util.Optional;
 import static org.apache.commons.lang3.RandomUtils.nextInt;
 
 @Slf4j
-@AllArgsConstructor
-@ToString
+@AllArgsConstructor @ToString
 public final class CalcStep {
     public static final int MAX_ERRORS = 999;
 

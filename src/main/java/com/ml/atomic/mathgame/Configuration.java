@@ -1,12 +1,12 @@
 package com.ml.atomic.mathgame;
 
-import com.google.common.collect.Maps;
+import com.google.common.collect.Lists;
 import com.google.common.collect.Range;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.ToString;
 
-import java.util.Map;
+import java.util.List;
 
 /**
  * 生成算式的配置
@@ -34,10 +34,10 @@ class Configuration {
      * 从第二个数开始后面的被计算数配置
      */
     @Builder.Default
-    Map<ConfigurationPart, Integer> subItems = Maps.newLinkedHashMap();
+    List<ConfigurationPart> subItems = Lists.newArrayList();
 
     public int getTotalCount() {
-        return this.subItems.values().stream()
-                .mapToInt(i -> i).sum();
+        return this.subItems.stream()
+                .mapToInt(ConfigurationPart::getCount).sum();
     }
 }
