@@ -51,6 +51,9 @@ class ArithmeticGenerator {
         return Lists.newArrayList(result);
     }
 
+    /**
+     * 生成一条完整序列的算式
+     */
     private static Optional<Result> doGenerateItem(Range<Integer> firstNum, Range<Integer> resultRange, ConfigurationPart subSeq) {
 
         List<CalcStep> steps = subSeq.steps;

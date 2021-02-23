@@ -42,7 +42,6 @@ public class MathGameApplication {
         List<String> blank = item.stream().map(ArithmeticGenerator.Result::getBlank).collect(Collectors.toList());
         List<String> answer = item.stream().map(ArithmeticGenerator.Result::getWithAnswer).collect(Collectors.toList());
 
-
         new XlsxExportRenderer("/home/atomic/tmp/math_game.xlsx").execute(blank);
         new XlsxExportRenderer("/home/atomic/tmp/math_game_answer.xlsx").execute(answer);
 
