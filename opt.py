@@ -1,5 +1,6 @@
 from enum import Enum, unique
 
+
 @unique
 class Operator(Enum):
     """
@@ -11,4 +12,6 @@ class Operator(Enum):
     MUL = "x"
     DIV = "÷"
 
+
 # print(repr(Operator.ADD))
+# print(Operator.ADD.value + " ")

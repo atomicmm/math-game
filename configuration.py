@@ -35,15 +35,3 @@ class Configuration(object):
 
     def total_count(self):
         return sum(map(lambda i: i.count, self.sub_items))
-
-
-one_to_hundred = portion.open(1, 100)
-config = Configuration()
-config.sub_items = [
-    ConfigurationPart(50).add_step(Operator.ADD, one_to_hundred, one_to_hundred).add_step(
-        Operator.ADD, one_to_hundred, one_to_hundred),
-
-    ConfigurationPart(50).add_step(Operator.ADD, one_to_hundred, one_to_hundred).add_step(
-        Operator.SUB, one_to_hundred, one_to_hundred),
-]
-print(config.total_count())

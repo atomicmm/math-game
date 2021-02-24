@@ -58,6 +58,7 @@ class CalcStep(object):
             if error_count >= CalcStep.max_error:
                 print("求值失败", last_number, " ", self.operator,
                       " ? in", self.result_range)
+                return
 
 # step = CalcStep(Operator.ADD, portion.open(1, 100), portion.open(1, 100))
 # num = step.apply(10)
