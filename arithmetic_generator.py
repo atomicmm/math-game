@@ -7,18 +7,10 @@ import portion
 from configuration import Configuration, ConfigurationPart
 
 
-class Result(object):
-    """临时计算结果的holder"""
-
-    def __init__(self, blank, with_answer):
-        self.blank = blank
-        self.with_answer = with_answer
-
-
 class ArithmeticGenerator(object):
     """ 算术题生成器 """
 
-    def execute(self, config: Configuration) -> List[Result]:
+    def execute(self, config: Configuration):
         start_time = time.time()
 
         if len(config.sub_items) == 0:
@@ -55,7 +47,7 @@ class ArithmeticGenerator(object):
                 if step_result is not None:
                     result_holder.append(step_result)
                 else:
-                    pass
+                    return
 
             # 序列生成结束后，最后计算结果是最后一个元素
             final_result = result_holder[-1].result
@@ -67,4 +59,4 @@ class ArithmeticGenerator(object):
                 with_answer = "{} {} = {}".format(first, other, final_result)
                 print(with_answer)
 
-                return Result(blank, with_answer)
+                return (blank, with_answer)

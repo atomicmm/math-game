@@ -17,4 +17,5 @@ confLsc.sub_items = [
 ]
 
 items = ArithmeticGenerator().execute(confLsc)
-print(items[0])
+print(map(lambda i: i[0], items))
+print(map(lambda i: i[1], items))
