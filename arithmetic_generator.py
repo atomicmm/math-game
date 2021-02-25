@@ -1,3 +1,4 @@
+from calc_step import Result
 import time
 from random import randint
 from typing import List, Optional
@@ -40,9 +41,9 @@ class ArithmeticGenerator(object):
         """
         first = randint(first_num.lower, first_num.upper)
         while True:
-            result_holder = []
+            result_holder: List[Result] = []
             for i, step in enumerate(sub_seq.steps):
-                last_val = first if i == 0 else result_holder[-1].result
+                last_val = first if i == 0 else result_holder[-1]["result"]
                 step_result = step.apply(last_val)
                 if step_result is not None:
                     result_holder.append(step_result)
@@ -50,13 +51,12 @@ class ArithmeticGenerator(object):
                     return
 
             # 序列生成结束后，最后计算结果是最后一个元素
-            final_result = result_holder[-1].result
+            final_result = result_holder[-1]["result"]
             if final_result in result_range:
                 # 组合后续序列的值
-                other = " ".join(map(lambda i: "{} {}".format(
-                    i.operator.value, i.val), result_holder))
+                other = " ".join(map(lambda i: "{} {}".format(i["operator"].value, i["val"]), result_holder))
                 blank = "{} {} =".format(first, other)
                 with_answer = "{} {} = {}".format(first, other, final_result)
-                print(with_answer)
+                # print(with_answer)
 
                 return (blank, with_answer)

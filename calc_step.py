@@ -1,4 +1,4 @@
-from typing import Optional
+from typing import Optional, TypedDict
 from random import randint
 
 import portion
@@ -6,15 +6,13 @@ import portion
 from opt import Operator
 
 
-class Result(object):
+class Result(TypedDict):
     """
     计算结果的holder
     """
-
-    def __init__(self, operator: Operator, val: int, result: int):
-        self.operator = operator
-        self.val = val
-        self.result = result
+    operator: Operator
+    val: int
+    result: int
 
 
 class CalcStep(object):
@@ -51,15 +49,11 @@ class CalcStep(object):
                 raise ValueError("使用了暂未支持的操作符:", self.operator)
 
             if result in self.result_range:
-                return Result(self.operator, next_number, result)
+                return {"operator": self.operator, "val": next_number, "result": result}
             else:
                 error_count += 1
 
             if error_count >= CalcStep.max_error:
-                print("求值失败", last_number, " ", self.operator,
+                print("求值失败", last_number, " ", self.operator.value,
                       " ? in", self.result_range)
-                return
-
-# step = CalcStep(Operator.ADD, portion.open(1, 100), portion.open(1, 100))
-# num = step.apply(10)
-# print(num.val)
+                return None

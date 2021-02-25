@@ -7,15 +7,12 @@ one_to_hundred = portion.open(1, 100)
 
 confLsc = Configuration()
 confLsc.sub_items = [
-    ConfigurationPart(50)
-    .add_step(Operator.ADD, one_to_hundred, one_to_hundred)
-    .add_step(Operator.ADD, one_to_hundred, one_to_hundred),
-
-    ConfigurationPart(50)
-    .add_step(Operator.ADD, one_to_hundred, one_to_hundred)
-    .add_step(Operator.SUB, one_to_hundred, one_to_hundred),
+    ConfigurationPart(50).add_step(Operator.ADD).add_step(Operator.ADD),
+    ConfigurationPart(50).add_step(Operator.ADD).add_step(Operator.SUB),
 ]
 
 items = ArithmeticGenerator().execute(confLsc)
-print(map(lambda i: i[0], items))
-print(map(lambda i: i[1], items))
+blank = list(map(lambda i: i[0], items))
+with_answer = list(map(lambda i: i[1], items))
+
+print(blank)

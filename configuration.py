@@ -1,18 +1,19 @@
 import portion
+from typing import List
 
 from calc_step import CalcStep
 from opt import Operator
 
 # 1-100的开区间
-one_to_hundred = portion.open(1, 100)
+one_to_hundred = portion.closed(1, 100)
 
 
 class ConfigurationPart(object):
-    def __init__(self, count: int):
+    def __init__(self, count: int, steps: List[CalcStep] = []):
         self.count = count
-        self.steps = []
+        self.steps = steps
 
-    def add_step(self, operator: Operator, num_range: portion, result_range: portion):
+    def add_step(self, operator: Operator, num_range: portion = one_to_hundred, result_range: portion = one_to_hundred):
         step = CalcStep(operator, num_range, result_range)
         self.steps.append(step)
         return self
@@ -31,7 +32,7 @@ class Configuration(object):
     first_num_range = one_to_hundred
 
     # 从第二个数开始的配置子序列
-    sub_items = []
+    sub_items: List[ConfigurationPart] = []
 
     def total_count(self):
         return sum(map(lambda i: i.count, self.sub_items))
