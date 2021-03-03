@@ -14,7 +14,7 @@ class ExcelWriter(object):
 
         worksheet = workbook.add_sheet("sheet1")
 
-        # 一行4列, 设置每列列宽
+        # 一行两列, 设置每列列宽
         for i in range(0, 2):
             worksheet.col(i).width = 256 * 30
 
@@ -33,4 +33,5 @@ def grouping_by(items: List[Any], size: int) -> List[List[Any]]:
     """
     以size为分组单位，将items切成一个一个小的list
     """
-    return list(map(lambda i: items[i:i+size], range(0, len(items), size)))
+
+    return list(map(lambda i: items[i:i + size], range(0, len(items), size)))

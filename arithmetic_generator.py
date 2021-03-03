@@ -24,14 +24,14 @@ class ArithmeticGenerator(object):
         for item in config.sub_items:
             sub_seq_count = 0
             while sub_seq_count < item.count:
-                result_item = self.do_generate_item(config.first_num_range, config.result_range, item)
+                result_item = self.do_generate_item(
+                    config.first_num_range, config.result_range, item)
                 if result_item is not None:
                     result.append(result_item)
                     sub_seq_count += 1
 
         cost = 1000 * (time.time() - start_time)
-        print("生成[", total_count, "]条算术题完毕, 共耗时 = ",
-              cost, "ms")
+        print("生成[", total_count, "]条算术题完毕, 共耗时 = ", cost, "ms")
         return result
 
     def do_generate_item(self, first_num: portion, result_range: portion, sub_seq: ConfigurationPart):
